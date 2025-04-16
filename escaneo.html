@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escaneo QR</title>
+  <link rel="stylesheet" href="styles/escaneo.css">
+</head>
+<body>
+  <div class="scanner-container">
+    <h1>Escanea tu Código QR</h1>
+    <video id="video" autoplay></video>
+    <p id="output">Esperando escaneo...</p>
+    <table id="tabla-asistencia">
+      <thead>
+        <tr><th>Matrícula</th><th>Fecha</th><th>Hora</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="jsQR.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

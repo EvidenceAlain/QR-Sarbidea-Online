@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Asistentzia Kontrola</title>
+  <link rel="stylesheet" href="landing.css">
+</head>
+<body>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <img src="Commons_QR_code.png" alt="QR Ikonoa">
+      </div>
+
+      <h1>Ongi etorri Asistentzia Kontrol Sistemara</h1>
+      <p>Kontrolatu zure asistentzia modu modernoan eta eraginkorrean QR kodeak erabiliz.</p>
+
+      <!-- Botón inicial para iniciar el sistema -->
+      <a href="javascript:void(0);" class="btn-entrar" id="iniciarSistemaBtn" onclick="mostrarOpciones()">Sistema Hasieratu</a>
+
+      <!-- Opciones ocultas de 2A y 2B -->
+      <div class="opciones-container" id="opcionesContainer" style="display: none;">
+        <label class="opcion-label" onclick="seleccionarOpcion('2A')">
+          Aukera 2A
+        </label>
+        <label class="opcion-label" onclick="seleccionarOpcion('2B')">
+          Aukera 2B
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <footer></footer> <!-- Eliminado pie de página -->
+
+  <script>
+    function mostrarOpciones() {
+      const opciones = document.getElementById("opcionesContainer");
+      const iniciarBtn = document.getElementById("iniciarSistemaBtn");
+
+      opciones.style.display = "block"; // Hacer visibles las opciones
+      iniciarBtn.style.display = "none"; // Ocultar el botón "Sistema Hasieratu"
+    }
+
+    function seleccionarOpcion(opcion) {
+      // Redirigir a registro.html con el parámetro de la clase seleccionada
+      window.location.href = `registro.html?clase=${opcion}`;
+    }
+  </script>
+</body>
+</html>

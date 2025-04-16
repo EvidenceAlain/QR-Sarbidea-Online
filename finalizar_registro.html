@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erregistroa Amaituta</title>
+  <link rel="stylesheet" href="registro.css">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <style>
+    .btn-reiniciar {
+      padding: 12px 24px;
+      background-color: #ff4081;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+      max-width: 200px;
+      margin-top: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-reiniciar:hover {
+      background-color: #e73370;
+    }
+
+    .btn-reiniciar:active {
+      background-color: #d53e6b;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body style="background: linear-gradient(to bottom right, #00aaff, #00cc88);">
+  <section class="registro-hero">
+    <div class="registro-content">
+      <h1 style="color: white;">Erregistroa amaituta</h1>
+      <p style="color: white;">Erabiltzaile hauek ez dira erregistratu:</p>
+      <ul id="noRegistrados" style="color: white;"></ul>
+      <button id="reiniciar" class="btn-reiniciar">Berrabiarazi</button>
+    </div>
+  </section>
+
+  <footer><p>&copy; 2025 Asistentzia Kontrol Sistema</p></footer>
+
+  <script>
+    // Inicializamos EmailJS
+    emailjs.init("oWh390UuP2P8Ico0O"); // Public key
+
+    const lista = document.getElementById('noRegistrados');
+    const botonReiniciar = document.getElementById('reiniciar');
+
+    const noRegistrados = JSON.parse(localStorage.getItem("notRegisteredUsers")) || [];
+    localStorage.removeItem("notRegisteredUsers");
+
+    const usuarios = [
+      { nombre: "alainhernandez", correo: "alainhernandez574@gmail.com" },
+      { nombre: "alexjimenez", correo: "evidencealain@gmail.com" },
+      { nombre: "mikelotamendi", correo: "mikelotamendi@gmail.com" },
+      { nombre: "aimarmelero", correo: "aimarmelero@gmail.com" }
+    ];
+
+    if (noRegistrados.length === 0) {
+      lista.innerHTML = "<li>Erabiltzaile guztiak erregistratu dira!</li>";
+      botonReiniciar.style.display = "none";
+    } else {
+      noRegistrados.forEach(user => {
+        const li = document.createElement("li");
+        li.textContent = user;
+        lista.appendChild(li);
+      });
+    }
+
+    // Enviar correos a todos los usuarios con mensaje personalizado
+    usuarios.forEach(usuario => {
+      const estaRegistrado = !noRegistrados.includes(usuario.nombre);
+      const mensaje = estaRegistrado
+        ? `Kaixo ${usuario.nombre}, zure erregistroa ondo burutu da. Eskerrik asko!`
+        : `Kaixo ${usuario.nombre}, ezin izan zara erregistratu gaurko ekitaldian.`;
+
+      const templateParams = {
+        to_email: usuario.correo,
+        to_name: usuario.nombre,
+        message: mensaje
+      };
+
+      emailjs.send("service_uju3ime", "template_u6rdoxb", templateParams)
+        .then(response => {
+          console.log(`✅ Email bidalia ${usuario.nombre}-ri (${usuario.correo}), response.status`);
+        })
+        .catch(error => {
+          console.error(`❌ Errorea ${usuario.nombre}-ri emaila bidaltzean:`, error);
+        });
+    });
+
+    // Reiniciar sistema
+    botonReiniciar.addEventListener("click", () => {
+      const usuariosOriginales = usuarios.map(u => u.nombre);
+      localStorage.setItem("notRegisteredUsers", JSON.stringify(usuariosOriginales));
+      localStorage.removeItem("asistencias");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>

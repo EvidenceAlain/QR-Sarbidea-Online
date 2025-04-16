@@ -1,0 +1,83 @@
+/* finalizar.css */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #00bcd4, #1de9b6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+  }
+  
+  .registro-hero {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro con transparencia */
+    width: 100%;
+    max-width: 800px;
+  }
+  
+  .registro-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 1.2rem;
+  }
+  
+  li {
+    background-color: #ff4081;
+    color: white;
+    margin: 10px 0;
+    padding: 12px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  li:nth-child(even) {
+    background-color: #f06292;
+  }
+  
+  footer {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+    color: white;
+    padding: 10px;
+  }
+  
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 1.5rem;
+    }
+  
+    p {
+      font-size: 1rem;
+    }
+  
+    ul {
+      font-size: 1rem;
+    }
+  }
+  

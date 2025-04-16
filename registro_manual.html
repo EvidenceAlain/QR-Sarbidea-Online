@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Erregistro Eskuz</title>
+  <link rel="stylesheet" href="registro.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <style>
+    /* Estilos para el modal de contraseña */
+    #passwordModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    }
+
+    .modal-content h3 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .modal-content input[type="password"],
+    .registro-content input[type="text"] {
+      padding: 12px;
+      margin-top: 15px;
+      width: 100%;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    /* Estilo del campo de texto cuando tiene foco */
+    .registro-content input[type="text"]:focus,
+    .modal-content input[type="password"]:focus {
+      border-color: #007bff;
+      background-color: #eaf2ff;
+    }
+
+    /* Botones mejorados */
+    .modal-content button,
+    .registro-content button {
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px 0;
+      border: none;
+      font-size: 16px;
+    }
+
+    .modal-content button {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .modal-content button:hover {
+      background-color: #005fa3;
+    }
+
+    .registro-content button {
+      background-color: #FF4081;
+      color: white;
+    }
+
+    .registro-content button:hover {
+      background-color: #e73370;
+    }
+
+    .btn-finalizar {
+      background-color: #FF4081;
+      color: white;
+    }
+
+    .btn-finalizar:hover {
+      background-color: #e73370;
+    }
+
+    footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #f0f0f0;
+    }
+  </style>
+</head>
+<body style="background: linear-gradient(to bottom right, #00aaff, #00cc88);">
+  <section class="registro-hero">
+    <div class="registro-content">
+      <h1 style="color: white;">Eskuzko Erregistroa</h1>
+      <input type="text" id="usuarioInput" placeholder="Erabiltzaile izena" />
+      <button onclick="registrarUsuario()">Erregistratu</button>
+      <button class="btn-finalizar" onclick="mostrarModal()">Erregistroa amaitu</button>
+    </div>
+  </section>
+
+  <div id="passwordModal">
+    <div class="modal-content">
+      <h3>Pasahitza sartu</h3>
+      <input type="password" id="passwordInput" placeholder="Pasahitza" />
+      <div style="margin-top: 20px;">
+        <button onclick="verificarContrasena()">✅ Bidali</button>
+        <button onclick="cerrarModal()" style="background-color: #ccc; color: #333; margin-left: 10px;">⬅ Atzera</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>&copy; 2025 Asistentzia Kontrol Sistema</p></footer>
+
+  <script>
+    // Leer el parámetro 'clase' desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const classSelected = urlParams.get('clase');
+
+    // Determinar los usuarios permitidos según la clase seleccionada
+    const usuariosPermitidos = classSelected === '2A' ? [
+      "alainhernandez", "alexjimenez", "aimarmelero", "mikelotamendi"
+    ] : [
+      "erikrodriguez", "alexdelrio", "alainhernandez", "alexjimenez"
+    ];
+
+    function registrarUsuario() {
+      const input = document.getElementById('usuarioInput');
+      const userCode = input.value.trim().toLowerCase();
+
+      if (!usuariosPermitidos.includes(userCode)) {
+        alert("Erabiltzailea ez da baimendua.");
+        return;
+      }
+
+      let asistencias = JSON.parse(localStorage.getItem("asistencias")) || [];
+
+      if (!asistencias.some(a => a.user === userCode)) {
+        const now = new Date();
+        asistencias.push({
+          user: userCode,
+          date: now.toLocaleDateString(),
+          time: now.toLocaleTimeString()
+        });
+        localStorage.setItem("asistencias", JSON.stringify(asistencias));
+        alert(`${userCode} konektatu zara`);
+      } else {
+        alert(`${userCode} dagoeneko erregistratua dago.`);
+      }
+
+      input.value = "";
+    }
+
+    function mostrarModal() {
+      document.getElementById("passwordModal").style.display = "flex";
+      document.getElementById("passwordInput").value = ""; // Limpia el input
+    }
+
+    function verificarContrasena() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === "irakasle123") {
+        const asistencias = JSON.parse(localStorage.getItem("asistencias")) || [];
+        const registrados = asistencias.map(a => a.user);
+        const noRegistrados = usuariosPermitidos.filter(u => !registrados.includes(u));
+        localStorage.setItem("notRegisteredUsers", JSON.stringify(noRegistrados));
+        window.location.href = "finalizar_registro.html";
+      } else {
+        alert("Pasahitz okerra.");
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById("passwordModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>

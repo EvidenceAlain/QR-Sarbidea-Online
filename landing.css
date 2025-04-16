@@ -1,0 +1,114 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(120deg, #007BFF, #00c6ff);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.hero {
+  text-align: center;
+  padding: 2rem;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 1s ease;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-icon img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+  filter: invert(1); /* Blanco */
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.btn-entrar {
+  display: inline-block;
+  background-color: white;
+  color: #007BFF;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-entrar:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+/* Estilo para las opciones */
+.opciones-container {
+  display: none;  /* Ocultas inicialmente */
+  margin-top: 30px;
+}
+
+.opcion-label {
+  display: block;
+  margin: 15px 0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.opcion-input {
+  margin-right: 10px;
+  accent-color: #007BFF; /* Cambiar el color del radio */
+}
+
+.opcion-btn {
+  margin-top: 20px;
+  padding: 12px 25px;
+  font-size: 1rem;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.opcion-btn:hover {
+  background-color: #0056a3;
+}
+
+footer {
+  position: absolute;
+  bottom: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #f0f0f0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}

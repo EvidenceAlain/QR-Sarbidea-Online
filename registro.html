@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Asistentzia Erregistroa</title>
+  <link rel="stylesheet" href="registro.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <style>
+    /* Estilos para el modal de contraseña */
+    #passwordModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+    }
+
+    .modal-content h3 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .modal-content input[type="password"] {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .modal-content button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body style="background: linear-gradient(to bottom right, #00aaff, #00cc88);">
+  <section class="registro-hero">
+    <div class="registro-content">
+      <h1 style="color: white;">Eskaneatu zure QR Kodea</h1>
+      <p style="color: white;">QR kodearekin erregistratu edo eskuz egin dezakezu.</p>
+
+      <div class="camera-container">
+        <video id="camera" autoplay></video>
+      </div>
+
+      <a href="registro_manual.html" class="btn-entrar">Hasieratu Eskuz</a>
+      <button id="finalizarBtn" class="btn-entrar" style="background-color: #ff4081;">Erregistroa Amaitu</button>
+    </div>
+  </section>
+
+  <div id="passwordModal">
+    <div class="modal-content">
+      <h3>Pasahitza Sartu</h3>
+      <input type="password" id="passwordInput" placeholder="Pasahitza" />
+      <div style="margin-top: 20px;">
+        <button onclick="verificarContrasena()">✅ Bidali</button>
+        <button onclick="cerrarModal()" style="background-color: #ccc; color: #333; margin-left: 10px;">⬅ Atzera</button>
+      </div>
+    </div>
+  </div>
+
+  <footer></footer> <!-- Eliminado pie de página -->
+
+  <script>
+    // Leer el parámetro 'clase' desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const classSelected = urlParams.get('clase');
+
+    // Determinar los usuarios de acuerdo con la opción seleccionada
+    const allowedUsers = classSelected === '2A' ? [
+      "alainhernandez", "alexjimenez", "aimarmelero", "mikelotamendi"
+    ] : [
+      "erikrodriguez", "alexdelrio", "alainhernandez", "alexjimenez"
+    ];
+
+    const video = document.getElementById("camera");
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+      .then(stream => {
+        video.srcObject = stream;
+        video.play();
+        scanQRCode();
+      })
+      .catch(error => console.error("Kamerara sartzea ezinezkoa izan da:", error));
+
+    function scanQRCode() {
+      const canvasElement = document.createElement("canvas");
+      const canvas = canvasElement.getContext("2d");
+
+      function detect() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+          canvasElement.width = video.videoWidth;
+          canvasElement.height = video.videoHeight;
+          canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+          const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          const code = jsQR(imageData.data, canvasElement.width, canvasElement.height, { inversionAttempts: "dontInvert" });
+
+          if (code) {
+            const userCode = code.data.trim().toLowerCase();
+            if (allowedUsers.includes(userCode)) {
+              const now = new Date();
+              let savedRecords = JSON.parse(localStorage.getItem("asistencias")) || [];
+
+              if (!savedRecords.some(a => a.user === userCode)) {
+                savedRecords.push({
+                  user: userCode,
+                  date: now.toLocaleDateString(),
+                  time: now.toLocaleTimeString()
+                });
+                localStorage.setItem("asistencias", JSON.stringify(savedRecords));
+              }
+
+              alert(`${userCode} konektatu zara`);
+            } else {
+              alert("Erabiltzailea ez da baimendua.");
+            }
+          }
+        }
+        requestAnimationFrame(detect);
+      }
+      detect();
+    }
+
+    function mostrarModal() {
+      document.getElementById("passwordModal").style.display = "flex";
+      document.getElementById("passwordInput").value = ""; // Limpia el input
+    }
+
+    function cerrarModal() {
+      document.getElementById("passwordModal").style.display = "none";
+    }
+
+    function verificarContrasena() {
+      const input = document.getElementById("passwordInput").value;
+      if (input === "irakasle123") {
+        const asistencias = JSON.parse(localStorage.getItem("asistencias")) || [];
+        const registrados = asistencias.map(a => a.user);
+        const noRegistrados = allowedUsers.filter(u => !registrados.includes(u));
+        localStorage.setItem("notRegisteredUsers", JSON.stringify(noRegistrados));
+        window.location.href = "finalizar_registro.html";
+      } else {
+        alert("Pasahitz okerra.");
+      }
+    }
+
+    document.getElementById("finalizarBtn").addEventListener("click", () => {
+      mostrarModal();
+    });
+  </script>
+</body>
+</html>
